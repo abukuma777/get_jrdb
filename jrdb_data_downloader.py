@@ -1,8 +1,8 @@
-import datetime
 import os
 import re
 import shutil
 import subprocess
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from bs4 import BeautifulSoup
@@ -93,28 +93,66 @@ def download_file(link, auth):
         return None
 
 
+def move_file(txt_file, download_folder):
+    """
+    指定されたテキストファイルを適切なフォルダに移動する関数。
+
+    Parameters:
+    - txt_file (str): 移動するテキストファイルの名前
+    - download_folder (str): ファイルを保存する対象のフォルダ
+
+    処理の流れ:
+    1. ファイル名から年度とファイルタイプを抽出
+    2. 対象のフォルダを特定
+    3. フォルダが存在しない場合、作成
+    4. ファイルを対象のフォルダに移動
+
+    return:
+    - None
+    """
+    # ファイル名から年度とファイルタイプを抽出
+    match = re.search(r"([a-zA-Z]+)(\d+)", txt_file)
+    if match:
+        year_prefix = match.group(2)[:2]
+        century_prefix = "19" if 80 <= int(year_prefix) <= 99 else "20"
+        year = century_prefix + year_prefix
+
+        # 対象のフォルダを特定
+        target_folder = f"{download_folder}/{match.group(1)}/{year}/"
+
+        # フォルダが存在しない場合、作成
+        ensure_directory_exists(target_folder)
+
+        # ファイルを対象のフォルダに移動
+        shutil.move(f"tmp/{txt_file}", f"{target_folder}/{txt_file}")
+
+
 def extract_and_move_file(tmp_file_path, download_folder):
     """
-    ダウンロードしたファイルを解凍し、指定されたフォルダに移動する関数。
+    ダウンロードしたファイルを解凍し、適切なフォルダに非同期で移動する関数。
 
     Parameters:
     - tmp_file_path (str): ダウンロードしたファイルの一時保存パス
     - download_folder (str): ファイルを保存する対象のフォルダ
 
+    処理の流れ:
+    1. ダウンロードしたファイルを解凍
+    2. 解凍したテキストファイルを非同期で適切なフォルダに移動（move_file）
+
+    注意:
+    - この関数はThreadPoolExecutorを使用して非同期でファイルを移動します。
+
     return:
     - None
     """
+    # ダウンロードしたファイルを解凍
     subprocess.run(["lha", "-xw=tmp/", tmp_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    for txt_file in os.listdir("tmp/"):
-        if txt_file.endswith(".txt"):
-            match = re.search(r"([a-zA-Z]+)(\d+)", txt_file)
-            if match:
-                year_prefix = match.group(2)[:2]
-                century_prefix = "19" if 80 <= int(year_prefix) <= 99 else "20"
-                year = century_prefix + year_prefix
-                target_folder = f"{download_folder}/{match.group(1)}/{year}/"
-                ensure_directory_exists(target_folder)
-                shutil.move(f"tmp/{txt_file}", f"{target_folder}/{txt_file}")
+
+    # 解凍したテキストファイルを非同期で適切なフォルダに移動
+    with ThreadPoolExecutor() as executor:
+        for entry in os.scandir("tmp/"):
+            if entry.is_file() and entry.name.endswith(".txt"):
+                executor.submit(move_file, entry.name, download_folder)
 
 
 def download_and_organize_jrdb_data(File_type, download_folder):
@@ -129,7 +167,7 @@ def download_and_organize_jrdb_data(File_type, download_folder):
     1. 環境変数からJRDBのユーザー名とパスワードを取得（get_jrdb_user_and_password）
     2. JRDBのWebページからHTMLを取得
     3. BeautifulSoupでHTMLを解析し、ダウンロードリンクを取得（get_download_links）
-    4. tqdmを使用してダウンロードリンクからデータをダウンロード（download_file）
+    4. ThreadPoolExecutorを使用して非同期でダウンロードリンクからデータをダウンロード（download_file）
     5. ダウンロードしたデータを一時ディレクトリに保存
     6. ダウンロードしたデータを解凍（extract_and_move_file）
     7. 解凍したデータを年度ごとのフォルダに整理（extract_and_move_file）
@@ -138,6 +176,7 @@ def download_and_organize_jrdb_data(File_type, download_folder):
     注意:
     - この関数は一時ディレクトリ（'tmp/'）を使用します。ディレクトリが存在しない場合、自動的に作成されます。
     - 複数の補助関数を呼び出して各処理を行います。
+    - ダウンロードは非同期で行われ、高速化されています。
 
     return
     - None
@@ -176,10 +215,18 @@ def download_and_organize_jrdb_data(File_type, download_folder):
     ensure_directory_exists("tmp")
 
     # ダウンロードと解凍
-    for link in tqdm(download_links):
-        tmp_file_path = download_file(link, (JRDB_USER, JRDB_PASSWORD))
-        if tmp_file_path:
-            extract_and_move_file(tmp_file_path, download_folder)
+    with ThreadPoolExecutor() as executor:
+        future_to_link = {
+            executor.submit(download_file, link, (JRDB_USER, JRDB_PASSWORD)): link for link in download_links
+        }
+        for future in tqdm(as_completed(future_to_link), total=len(download_links)):
+            link = future_to_link[future]
+            try:
+                tmp_file_path = future.result()
+                if tmp_file_path:
+                    extract_and_move_file(tmp_file_path, download_folder)
+            except Exception as e:
+                print(f"ダウンロード中にエラーが発生しました（{link}）: {e}")
 
     # 一時ディレクトリを削除
     if os.path.exists("tmp/"):
