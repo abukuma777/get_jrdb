@@ -41,26 +41,13 @@ source ~/.bashrc
 
 ```
 
-## 追加説明
+## 基本的な使い方
 
-### `main.py` の設定
+以下のコマンドで大体のデータ取得できます。
 
-このスクリプトでは、`main.py` 内で `File_type` と `download_folder` を設定する。
-
-#### 例
-
-```python
-File_type = "Ov"  # ファイルタイプを指定
-download_folder = "/app/data/jrdb_txt"  # ダウンロード先フォルダを指定
+```bash
+python main.py
 ```
-
-### データの選択肢
-
-`File_type` には以下のような選択肢があります。
-
-- `Ov`: ３連単基準オッズデータ
-- `Paci`: JRDBデータパック
-
 ### 環境変数とスクリプトの関連性
 
 環境変数は `direnv` と共に用いられ、`main.py` や他のスクリプトでの認証などに使用。
