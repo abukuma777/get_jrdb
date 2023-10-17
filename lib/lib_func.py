@@ -2,9 +2,11 @@ import os
 import re
 import shutil
 import subprocess
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import chardet
 import requests
+from tqdm import tqdm
 
 
 def ensure_directory_exists(directory):
@@ -151,3 +153,53 @@ def extract_and_move_file(tmp_file_path, download_folder):
         for entry in os.scandir("tmp/"):
             if entry.is_file() and entry.name.endswith(".txt"):
                 executor.submit(move_file, entry.name, download_folder)
+
+
+# def convert_file_to_utf8(file_path):
+#     """
+#     指定されたテキストファイルのエンコーディングをUTF-8に変換する関数。
+
+#     Parameters:
+#     - file_path (str): エンコーディングを変換するテキストファイルのパス
+
+#     return:
+#     - None
+#     """
+#     with open(file_path, "rb") as f:
+#         result = chardet.detect(f.read())
+
+#     source_encoding = result["encoding"]
+
+#     if source_encoding.lower() != "utf-8":
+#         with open(file_path, "r", encoding=source_encoding) as f:
+#             content = f.read()
+
+#         with open(file_path, "w", encoding="utf-8") as f:
+#             f.write(content)
+
+
+# def convert_encoding_to_utf8(folder_path):
+#     """
+#     指定されたフォルダおよびそのサブフォルダ内のすべてのテキストファイルのエンコーディングをUTF-8に変換する関数。
+
+#     Parameters:
+#     - folder_path (str): エンコーディングを変換するテキストファイルが保存されているフォルダのパス
+
+#     return:
+#     - None
+#     """
+#     txt_files = []
+#     for root, dirs, files in os.walk(folder_path):
+#         for filename in files:
+#             if filename.endswith(".txt"):
+#                 file_path = os.path.join(root, filename)
+#                 txt_files.append(file_path)
+
+#     with ThreadPoolExecutor() as executor:
+#         future_to_file = {executor.submit(convert_file_to_utf8, file_path): file_path for file_path in txt_files}
+#         for future in tqdm(as_completed(future_to_file), total=len(future_to_file), desc="Converting files"):
+#             file = future_to_file[future]
+#             try:
+#                 future.result()
+#             except Exception as exc:
+#                 print(f"{file} generated an exception: {exc}")
