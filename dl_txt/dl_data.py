@@ -1,12 +1,13 @@
 import os
 import shutil
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from bs4 import BeautifulSoup
 
-# TODO: Blackformatterで自作関数が自動でここにきてしまう？
-from lib.lib_func import (
+# sys.path.append("/app/get_jrdb/lib")
+from lib_func import (
     download_file,
     ensure_directory_exists,
     extract_and_move_file,

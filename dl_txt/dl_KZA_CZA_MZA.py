@@ -1,11 +1,12 @@
 import os
 import re
 import shutil
+import sys
 from concurrent.futures import ThreadPoolExecutor
 
 import requests
 from bs4 import BeautifulSoup
-from lib.lib_func import (
+from lib_func import (
     download_file,
     ensure_directory_exists,
     extract_and_move_file,
