@@ -110,7 +110,7 @@ class JRDBFileConverter:
 
     def read_and_convert_cza(self, file_path):
         """
-        CZAファイルを読み込み、データフレームに変換する（ロジックは省略）。
+        JRDBのCZAファイルを読み込み、データフレームに変換する関数。
 
         Parameters:
         - file_path (str): 読み込むCZAファイルのパス。
@@ -118,7 +118,54 @@ class JRDBFileConverter:
         Returns:
         - pd.DataFrame: CZAファイルの内容を格納したデータフレーム。
         """
-        pass
+        # 空のリストを作成して、各行のデータを格納する
+        data_list = []
+
+        # ファイルを開く（エンコーディングは仕様に合わせて設定）
+        with open(file_path, "r", encoding=self.encoding) as f:
+            for line in f:
+                # 各行をエンコード
+                byte_str = line.encode(self.encoding)
+                # 各フィールドをバイト単位でスライスし、デコードしてデータを格納
+                data = {
+                    "調教師コード": byte_str[0:5].decode(self.encoding).strip(),
+                    "登録抹消フラグ": byte_str[5:6].decode(self.encoding).strip(),
+                    "登録抹消年月日": byte_str[6:14].decode(self.encoding).strip(),
+                    "調教師名": byte_str[14:26].decode(self.encoding).strip(),
+                    "調教師カナ": byte_str[26:56].decode(self.encoding).strip(),
+                    "調教師名略称": byte_str[56:62].decode(self.encoding).strip(),
+                    "所属コード": byte_str[62:63].decode(self.encoding).strip(),
+                    "所属地域名": byte_str[63:67].decode(self.encoding).strip(),
+                    "生年月日": byte_str[67:75].decode(self.encoding).strip(),
+                    "初免許年": byte_str[75:79].decode(self.encoding).strip(),
+                    "調教師コメント": byte_str[79:119].decode(self.encoding).strip(),
+                    "コメント入力年月日": byte_str[119:127].decode(self.encoding).strip(),
+                    "本年リーディング": byte_str[127:130].decode(self.encoding).strip(),
+                    "本年平地成績": byte_str[130:142].decode(self.encoding).strip(),
+                    "本年障害成績": byte_str[142:154].decode(self.encoding).strip(),
+                    "本年特別勝数": byte_str[154:157].decode(self.encoding).strip(),
+                    "本年重賞勝数": byte_str[157:160].decode(self.encoding).strip(),
+                    "昨年リーディング": byte_str[160:163].decode(self.encoding).strip(),
+                    "昨年平地成績": byte_str[163:175].decode(self.encoding).strip(),
+                    "昨年障害成績": byte_str[175:187].decode(self.encoding).strip(),
+                    "昨年特別勝数": byte_str[187:190].decode(self.encoding).strip(),
+                    "昨年重賞勝数": byte_str[190:193].decode(self.encoding).strip(),
+                    "通算平地成績": byte_str[193:213].decode(self.encoding).strip(),
+                    "通算障害成績": byte_str[213:233].decode(self.encoding).strip(),
+                    "データ年月日": byte_str[233:241].decode(self.encoding).strip(),
+                    "予備": byte_str[241:270].decode(self.encoding).strip(),
+                }
+
+                # スペースをNaNに置換
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+
+                # データリストに行データを追加
+                data_list.append(data)
+
+        # データリストからデータフレームを作成して返す
+        return pd.DataFrame(data_list)
 
     def save_to_csv(self, base_input_directory, output_directory):
         """
