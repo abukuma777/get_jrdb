@@ -155,51 +155,16 @@ def extract_and_move_file(tmp_file_path, download_folder):
                 executor.submit(move_file, entry.name, download_folder)
 
 
-# def convert_file_to_utf8(file_path):
-#     """
-#     指定されたテキストファイルのエンコーディングをUTF-8に変換する関数。
+# JOAの'日'列用
+def hex_to_dec(x):
+    """
+    16進数（または10進数）の値を10進数に変換する関数。
 
-#     Parameters:
-#     - file_path (str): エンコーディングを変換するテキストファイルのパス
+    Parameters:
+    - x (str or int): 16進数または10進数の値（文字列または整数）。
 
-#     return:
-#     - None
-#     """
-#     with open(file_path, "rb") as f:
-#         result = chardet.detect(f.read())
-
-#     source_encoding = result["encoding"]
-
-#     if source_encoding.lower() != "utf-8":
-#         with open(file_path, "r", encoding=source_encoding) as f:
-#             content = f.read()
-
-#         with open(file_path, "w", encoding="utf-8") as f:
-#             f.write(content)
-
-
-# def convert_encoding_to_utf8(folder_path):
-#     """
-#     指定されたフォルダおよびそのサブフォルダ内のすべてのテキストファイルのエンコーディングをUTF-8に変換する関数。
-
-#     Parameters:
-#     - folder_path (str): エンコーディングを変換するテキストファイルが保存されているフォルダのパス
-
-#     return:
-#     - None
-#     """
-#     txt_files = []
-#     for root, dirs, files in os.walk(folder_path):
-#         for filename in files:
-#             if filename.endswith(".txt"):
-#                 file_path = os.path.join(root, filename)
-#                 txt_files.append(file_path)
-
-#     with ThreadPoolExecutor() as executor:
-#         future_to_file = {executor.submit(convert_file_to_utf8, file_path): file_path for file_path in txt_files}
-#         for future in tqdm(as_completed(future_to_file), total=len(future_to_file), desc="Converting files"):
-#             file = future_to_file[future]
-#             try:
-#                 future.result()
-#             except Exception as exc:
-#                 print(f"{file} generated an exception: {exc}")
+    Returns:
+    - int: 10進数に変換された値。
+    """
+    hex_dict = {"a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15}
+    return hex_dict.get(x, x)

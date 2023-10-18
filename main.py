@@ -28,11 +28,16 @@ download_folder = "/app/data/jrdb_txt"
 # # BAC
 # File_type = "BAC"
 # bac_converter = JRDBFileConverter(File_type, "SHIFT_JIS")
-# bac_converter.save_to_csv(f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# JOA
+File_type = "JOA"
+bac_converter = JRDBFileConverter(File_type, "SHIFT_JIS")
+bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 
 # # cp932
 # # CZA
 # File_type = "CZA"
 # cza_converter = JRDBFileConverter(File_type, "CP932")
-# cza_converter.save_to_csv(f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# cza_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
