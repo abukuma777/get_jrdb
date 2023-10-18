@@ -1,6 +1,6 @@
-from dl_txt.dl_data import download_and_organize_jrdb_data
-from dl_txt.dl_KZA_CZA_MZA import download_jockey_data
-from output_csv.BAC_to_csv import BAC_save_to_csv
+from dl_data import download_and_organize_jrdb_data
+from dl_KZA_CZA_MZA import download_jockey_data
+from JRDBTxtToCSV import JRDBFileConverter
 
 # TODO：最後コメントを解除
 
@@ -24,4 +24,5 @@ from output_csv.BAC_to_csv import BAC_save_to_csv
 # # ----------------------------------------
 
 # BAC
-BAC_save_to_csv()
+bac_converter = JRDBFileConverter("BAC", "SHIFT_JIS")
+bac_converter.save_to_csv("/app/data/jrdb_txt/BAC", "/app/data/jrdb_csv/BAC")
