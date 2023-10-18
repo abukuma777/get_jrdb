@@ -43,6 +43,22 @@ class JRDBFileConverter:
             return self.read_and_convert_cza(file_path)
         elif self.file_type == "JOA":
             return self.read_and_convert_joa(file_path)
+        elif self.file_type == "KZA":
+            return self.read_and_convert_kza(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
         else:
             raise ValueError("Unsupported file type")
 
@@ -213,6 +229,67 @@ class JRDBFileConverter:
                     "騎手ＢＢ◎単勝回収率": byte_str[101:106].decode(self.encoding).strip(),
                     "騎手ＢＢ◎連対率": byte_str[106:111].decode(self.encoding).strip(),
                     "予備": byte_str[111:114].decode(self.encoding).strip(),
+                }
+
+                # スペースをNaNに置換
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+
+                # データリストに行データを追加
+                data_list.append(data)
+
+        # データリストからデータフレームを作成して返す
+        return pd.DataFrame(data_list)
+
+    def read_and_convert_kza(self, file_path):
+        """
+        JRDBのKZAファイルを読み込み、データフレームに変換する関数。
+
+        Parameters:
+        - file_path (str): 読み込むKZAファイルのパス。
+
+        Returns:
+        - pd.DataFrame: KZAファイルの内容を格納したデータフレーム。
+        """
+        # 空のリストを作成して、各行のデータを格納する
+        data_list = []
+
+        # ファイルを開く（エンコーディングは仕様に合わせて設定）
+        with open(file_path, "r", encoding=self.encoding) as f:
+            for line in f:
+                # 各行をエンコード
+                byte_str = line.encode(self.encoding)
+                # 各フィールドをバイト単位でスライスし、デコードしてデータを格納
+                data = {
+                    "騎手コード": byte_str[0:5].decode(self.encoding).strip(),
+                    "登録抹消フラグ": byte_str[5:6].decode(self.encoding).strip(),
+                    "登録抹消年月日": byte_str[6:14].decode(self.encoding).strip(),
+                    "騎手名": byte_str[14:26].decode(self.encoding).strip(),
+                    "騎手カナ": byte_str[26:56].decode(self.encoding).strip(),
+                    "騎手名略称": byte_str[56:62].decode(self.encoding).strip(),
+                    "所属コード": byte_str[62:63].decode(self.encoding).strip(),
+                    "所属地域名": byte_str[63:67].decode(self.encoding).strip(),
+                    "生年月日": byte_str[67:75].decode(self.encoding).strip(),
+                    "初免許年": byte_str[75:79].decode(self.encoding).strip(),
+                    "見習い区分": byte_str[79:80].decode(self.encoding).strip(),
+                    "所属厩舎": byte_str[80:85].decode(self.encoding).strip(),
+                    "騎手コメント": byte_str[85:125].decode(self.encoding).strip(),
+                    "コメント入力年月日": byte_str[125:133].decode(self.encoding).strip(),
+                    "本年リーディング": byte_str[133:136].decode(self.encoding).strip(),
+                    "本年平地成績": byte_str[136:148].decode(self.encoding).strip(),
+                    "本年障害成績": byte_str[148:160].decode(self.encoding).strip(),
+                    "本年特別勝数": byte_str[160:163].decode(self.encoding).strip(),
+                    "本年重賞勝数": byte_str[163:166].decode(self.encoding).strip(),
+                    "昨年リーディング": byte_str[166:169].decode(self.encoding).strip(),
+                    "昨年平地成績": byte_str[169:181].decode(self.encoding).strip(),
+                    "昨年障害成績": byte_str[181:193].decode(self.encoding).strip(),
+                    "昨年特別勝数": byte_str[193:196].decode(self.encoding).strip(),
+                    "昨年重賞勝数": byte_str[196:199].decode(self.encoding).strip(),
+                    "通算平地成績": byte_str[199:219].decode(self.encoding).strip(),
+                    "通算障害成績": byte_str[219:239].decode(self.encoding).strip(),
+                    "データ年月日": byte_str[239:247].decode(self.encoding).strip(),
+                    "予備": byte_str[247:270].decode(self.encoding).strip(),
                 }
 
                 # スペースをNaNに置換
