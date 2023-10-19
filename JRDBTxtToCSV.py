@@ -47,8 +47,8 @@ class JRDBFileConverter:
             return self.read_and_convert_joa(file_path)
         elif self.file_type == "KAB":
             return self.read_and_convert_kab(file_path)
-
-        # TODO: KKA
+        elif self.file_type == "KKA":
+            return self.read_and_convert_kka(file_path)
         # TODO: KYI
         elif self.file_type == "KZA":
             return self.read_and_convert_kza(file_path)
@@ -424,6 +424,67 @@ class JRDBFileConverter:
                         data[key] = np.nan
                 data_list.append(data)
 
+        return pd.DataFrame(data_list)
+
+    def read_and_convert_kka(self, file_path):
+        """
+        KKA ファイルを読み込み、データフレームに変換する。
+
+        Parameters:
+        - file_path (str): 読み込むKKAファイルのパス。
+
+        Returns:
+        - pd.DataFrame: KKAファイルの内容を格納したデータフレーム。
+        """
+        data_list = []
+        detected_encoding = detect_encoding(file_path)
+
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                byte_str = line.encode(detected_encoding)
+                data = {
+                    "場コード": byte_str[0:2].decode(detected_encoding).strip(),
+                    "年": byte_str[2:4].decode(detected_encoding).strip(),
+                    "回": byte_str[4:5].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
+                    "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
+                    "馬番": byte_str[8:10].decode(detected_encoding).strip(),
+                    "ＪＲＡ成績": byte_str[10:22].decode(detected_encoding).strip(),
+                    "交流成績": byte_str[22:34].decode(detected_encoding).strip(),
+                    "他成績": byte_str[34:46].decode(detected_encoding).strip(),
+                    "芝ダ障害別成績": byte_str[46:58].decode(detected_encoding).strip(),
+                    "芝ダ障害別距離成績": byte_str[58:70].decode(detected_encoding).strip(),
+                    "トラック距離成績": byte_str[70:82].decode(detected_encoding).strip(),
+                    "ローテ成績": byte_str[82:94].decode(detected_encoding).strip(),
+                    "回り成績": byte_str[94:106].decode(detected_encoding).strip(),
+                    "騎手成績": byte_str[106:118].decode(detected_encoding).strip(),
+                    "良成績": byte_str[118:130].decode(detected_encoding).strip(),
+                    "稍成績": byte_str[130:142].decode(detected_encoding).strip(),
+                    "重成績": byte_str[142:154].decode(detected_encoding).strip(),
+                    "Ｓペース成績": byte_str[154:166].decode(detected_encoding).strip(),
+                    "Ｍペース成績": byte_str[166:178].decode(detected_encoding).strip(),
+                    "Ｈペース成績": byte_str[178:190].decode(detected_encoding).strip(),
+                    "季節成績": byte_str[190:202].decode(detected_encoding).strip(),
+                    "枠成績": byte_str[202:214].decode(detected_encoding).strip(),
+                    "騎手距離成績": byte_str[214:226].decode(detected_encoding).strip(),
+                    "騎手トラック距離成績": byte_str[226:238].decode(detected_encoding).strip(),
+                    "騎手調教師別成績": byte_str[238:250].decode(detected_encoding).strip(),
+                    "騎手馬主別成績": byte_str[250:262].decode(detected_encoding).strip(),
+                    "騎手ブリンカ成績": byte_str[262:274].decode(detected_encoding).strip(),
+                    "調教師馬主別成績": byte_str[274:286].decode(detected_encoding).strip(),
+                    "父馬産駒芝連対率": byte_str[286:289].decode(detected_encoding).strip(),
+                    "父馬産駒ダ連対率": byte_str[289:292].decode(detected_encoding).strip(),
+                    "父馬産駒連対平均距離": byte_str[292:296].decode(detected_encoding).strip(),
+                    "母父馬産駒芝連対率": byte_str[296:299].decode(detected_encoding).strip(),
+                    "母父馬産駒ダ連対率": byte_str[299:302].decode(detected_encoding).strip(),
+                    "母父馬産駒連対平均距離": byte_str[302:306].decode(detected_encoding).strip(),
+                    "予備": byte_str[306:322].decode(detected_encoding).strip(),
+                }
+
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+                data_list.append(data)
         return pd.DataFrame(data_list)
 
     def read_and_convert_kza(self, file_path):
