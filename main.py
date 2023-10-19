@@ -1,24 +1,22 @@
-from dl_data import download_and_organize_jrdb_data
-from dl_KZA_CZA_MZA import download_jockey_data
+from dl_data import download_and_organize_jrdb_data, download_KZA_CZA_MZA_data
 from JRDBTxtToCSV import JRDBFileConverter
 
 download_folder = "/app/data/jrdb_txt"
 
 # TODO：最後コメントを解除
+
 # # ----------------------------------------
 # # 1. JRDBから、DL->解凍->txtを保存
 # # ----------------------------------------
-
-# list_File_type = ["Ov", "Paci"]
-
+# list_File_type = ["Ov", "Paci", "Sed", "Skb"]
 
 # for File_type in list_File_type:
 #     # jrdb_data_downloader.pyの関数を呼び出す
-#     # Paci, OvをDL
+#     # Paci, Ov, Sed, SkbをDL
 #     download_and_organize_jrdb_data(File_type, download_folder)
 
 # # KZA, CZA, MZAをDLする
-# download_jockey_data(download_folder)
+# download_KZA_CZA_MZA_data(download_folder)
 
 # # ----------------------------------------
 # # 2. txt(エンコードバラバラ)->csv(UTF-8)
@@ -40,13 +38,13 @@ download_folder = "/app/data/jrdb_txt"
 # bac_converter = JRDBFileConverter(File_type)
 # bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# TODO: ZED, ZKBは保留
-# # ZED
-# File_type = "ZED"
-
-
 # # cp932
 # # CZA
 # File_type = "CZA"
 # cza_converter = JRDBFileConverter(File_type)
 # cza_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+
+# TODO: ZED, ZKBは保留
+# # ZED
+# File_type = "ZED"
