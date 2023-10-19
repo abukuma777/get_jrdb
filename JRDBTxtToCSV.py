@@ -37,6 +37,8 @@ class JRDBFileConverter:
         """
         if self.file_type == "BAC":
             return self.read_and_convert_bac(file_path)
+        elif self.file_type == "CHA":
+            return self.read_and_convert_cha(file_path)
         elif self.file_type == "CZA":
             return self.read_and_convert_cza(file_path)
         elif self.file_type == "JOA":
@@ -66,7 +68,7 @@ class JRDBFileConverter:
 
     def read_and_convert_bac(self, file_path):
         """
-        BAC or ZED ファイルを読み込み、データフレームに変換する。
+        BACファイルを読み込み、データフレームに変換する。
 
         Parameters:
         - file_path (str): 読み込むBACファイルのパス。
@@ -120,6 +122,65 @@ class JRDBFileConverter:
                     "馬券発売フラグ": byte_str[160:176].decode(detected_encoding).strip(),
                     "WIN5フラグ": byte_str[176:177].decode(detected_encoding).strip(),
                     "予備": byte_str[177:182].decode(detected_encoding).strip(),
+                }
+                # スペースをNaNに置換
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+                # データリストに行データを追加
+                data_list.append(data)
+        # データリストからデータフレームを作成して返す
+        return pd.DataFrame(data_list)
+
+    def read_and_convert_cha(self, file_path):
+        """
+        CHA ファイルを読み込み、データフレームに変換する。
+
+        Parameters:
+        - file_path (str): 読み込むCHAファイルのパス。
+
+        Returns:
+        - pd.DataFrame: CHAファイルの内容を格納したデータフレーム。
+        """
+        # 空のリストを作成して、各行のデータを格納する
+        data_list = []
+        # ファイルのエンコーディングを検出
+        # detected_encoding = detect_encoding(file_path)
+        detected_encoding = "SHIFT_JIS"
+
+        # ファイルのエンコーディングでテキストファイルを開く
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                # 各行をエンコード
+                byte_str = line.encode(detected_encoding)
+                # 各フィールドをバイト単位でスライスし、デコードしてデータを格納
+                data = {
+                    "場コード": byte_str[0:2].decode(detected_encoding).strip(),
+                    "年": byte_str[2:4].decode(detected_encoding).strip(),
+                    "回": byte_str[4:5].decode(detected_encoding).strip(),
+                    "日": byte_str[5:6].decode(detected_encoding).strip(),
+                    "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
+                    "馬番": byte_str[8:10].decode(detected_encoding).strip(),
+                    "曜日": byte_str[10:12].decode(detected_encoding).strip(),
+                    "調教年月日": byte_str[12:20].decode(detected_encoding).strip(),
+                    "回数": byte_str[20:21].decode(detected_encoding).strip(),
+                    "調教コースコード": byte_str[21:23].decode(detected_encoding).strip(),
+                    "追切種類": byte_str[23:24].decode(detected_encoding).strip(),
+                    "追い状態": byte_str[24:26].decode(detected_encoding).strip(),
+                    "乗り役": byte_str[26:27].decode(detected_encoding).strip(),
+                    "調教Ｆ": byte_str[27:28].decode(detected_encoding).strip(),
+                    "テンＦ": byte_str[28:31].decode(detected_encoding).strip(),
+                    "中間Ｆ": byte_str[31:34].decode(detected_encoding).strip(),
+                    "終いＦ": byte_str[34:37].decode(detected_encoding).strip(),
+                    "テンＦ指数": byte_str[37:40].decode(detected_encoding).strip(),
+                    "中間Ｆ指数": byte_str[40:43].decode(detected_encoding).strip(),
+                    "終いＦ指数": byte_str[43:46].decode(detected_encoding).strip(),
+                    "追切指数": byte_str[46:49].decode(detected_encoding).strip(),
+                    "併せ結果": byte_str[49:50].decode(detected_encoding).strip(),
+                    "追切種類（併せ馬）": byte_str[50:51].decode(detected_encoding).strip(),
+                    "年齢": byte_str[51:53].decode(detected_encoding).strip(),
+                    "クラス": byte_str[53:55].decode(detected_encoding).strip(),
+                    "予備": byte_str[55:62].decode(detected_encoding).strip(),
                 }
                 # スペースをNaNに置換
                 for key, value in data.items():
