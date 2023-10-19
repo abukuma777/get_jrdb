@@ -168,3 +168,18 @@ def hex_to_dec(x):
     """
     hex_dict = {"a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15}
     return hex_dict.get(x, x)
+
+
+def detect_encoding(file_path):
+    """
+    指定されたテキストファイルのエンコーディングを検出する関数。
+
+    Parameters:
+    - file_path (str): エンコーディングを検出するテキストファイルのパス。
+
+    Returns:
+    - str: 検出されたエンコーディング（例：'SHIFT_JIS', 'UTF-8'）。
+    """
+    with open(file_path, "rb") as f:
+        result = chardet.detect(f.read())
+    return result["encoding"]
