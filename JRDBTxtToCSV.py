@@ -49,13 +49,13 @@ class JRDBFileConverter:
             return self.read_and_convert_kab(file_path)
         elif self.file_type == "KKA":
             return self.read_and_convert_kka(file_path)
-        # TODO: KYI
+        elif self.file_type == "KYI":
+            return self.read_and_convert_kyi(file_path)
         elif self.file_type == "KZA":
             return self.read_and_convert_kza(file_path)
         elif self.file_type == "SED":
             return self.read_and_convert_sed(file_path)
-        # elif self.file_type == "JOA":
-        #     return self.read_and_convert_joa(file_path)
+
         # elif self.file_type == "JOA":
         #     return self.read_and_convert_joa(file_path)
         # elif self.file_type == "JOA":
@@ -485,6 +485,168 @@ class JRDBFileConverter:
                     if value == " ":
                         data[key] = np.nan
                 data_list.append(data)
+        return pd.DataFrame(data_list)
+
+    def read_and_convert_kyi(self, file_path):
+        """
+        KYI ファイルを読み込み、データフレームに変換する。
+
+        Parameters:
+        - file_path (str): 読み込むKYIファイルのパス。
+
+        Returns:
+        - pd.DataFrame: KYIファイルの内容を格納したデータフレーム。
+        """
+        data_list = []
+        detected_encoding = detect_encoding(file_path)
+
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                byte_str = line.encode(detected_encoding)
+                data = {
+                    "場コード": byte_str[0:2].decode(detected_encoding).strip(),
+                    "年": byte_str[2:4].decode(detected_encoding).strip(),
+                    "回": byte_str[4:5].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
+                    "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
+                    "馬番": byte_str[8:10].decode(detected_encoding).strip(),
+                    "血統登録番号": byte_str[10:18].decode(detected_encoding).strip(),
+                    "馬名": byte_str[18:54].decode(detected_encoding).strip(),
+                    "IDM": byte_str[54:59].decode(detected_encoding).strip(),
+                    "騎手指数": byte_str[59:64].decode(detected_encoding).strip(),
+                    "情報指数": byte_str[64:69].decode(detected_encoding).strip(),
+                    "予備1": byte_str[69:74].decode(detected_encoding).strip(),
+                    "予備2": byte_str[74:79].decode(detected_encoding).strip(),
+                    "予備3": byte_str[79:84].decode(detected_encoding).strip(),
+                    "総合指数": byte_str[84:89].decode(detected_encoding).strip(),
+                    "脚質": byte_str[89:90].decode(detected_encoding).strip(),
+                    "距離適性": byte_str[90:91].decode(detected_encoding).strip(),
+                    "上昇度": byte_str[91:92].decode(detected_encoding).strip(),
+                    "ローテーション": byte_str[92:95].decode(detected_encoding).strip(),
+                    "基準オッズ": byte_str[95:100].decode(detected_encoding).strip(),
+                    "基準人気順位": byte_str[100:102].decode(detected_encoding).strip(),
+                    "基準複勝オッズ": byte_str[102:107].decode(detected_encoding).strip(),
+                    "基準複勝人気順位": byte_str[107:109].decode(detected_encoding).strip(),
+                    "特定情報◎": byte_str[109:112].decode(detected_encoding).strip(),
+                    "特定情報○": byte_str[112:115].decode(detected_encoding).strip(),
+                    "特定情報▲": byte_str[115:118].decode(detected_encoding).strip(),
+                    "特定情報△": byte_str[118:121].decode(detected_encoding).strip(),
+                    "特定情報×": byte_str[121:124].decode(detected_encoding).strip(),
+                    "総合情報◎": byte_str[124:127].decode(detected_encoding).strip(),
+                    "総合情報○": byte_str[127:130].decode(detected_encoding).strip(),
+                    "総合情報▲": byte_str[130:133].decode(detected_encoding).strip(),
+                    "総合情報△": byte_str[133:136].decode(detected_encoding).strip(),
+                    "総合情報×": byte_str[136:139].decode(detected_encoding).strip(),
+                    "人気指数": byte_str[139:144].decode(detected_encoding).strip(),
+                    "調教指数": byte_str[144:149].decode(detected_encoding).strip(),
+                    "厩舎指数": byte_str[149:154].decode(detected_encoding).strip(),
+                    "調教矢印コード": byte_str[154:155].decode(detected_encoding).strip(),
+                    "厩舎評価コード": byte_str[155:156].decode(detected_encoding).strip(),
+                    "騎手期待連対率": byte_str[156:160].decode(detected_encoding).strip(),
+                    "激走指数": byte_str[160:163].decode(detected_encoding).strip(),
+                    "蹄コード": byte_str[163:165].decode(detected_encoding).strip(),
+                    "重適正コード": byte_str[165:166].decode(detected_encoding).strip(),
+                    "クラスコード": byte_str[166:168].decode(detected_encoding).strip(),
+                    "予備4": byte_str[168:170].decode(detected_encoding).strip(),
+                    "ブリンカー": byte_str[170:171].decode(detected_encoding).strip(),
+                    "騎手名": byte_str[171:183].decode(detected_encoding).strip(),
+                    "負担重量": byte_str[183:186].decode(detected_encoding).strip(),
+                    "見習い区分": byte_str[186:187].decode(detected_encoding).strip(),
+                    "調教師名": byte_str[187:199].decode(detected_encoding).strip(),
+                    "調教師所属": byte_str[199:203].decode(detected_encoding).strip(),
+                    "前走1競走成績キー": byte_str[203:219].decode(detected_encoding).strip(),
+                    "前走2競走成績キー": byte_str[219:235].decode(detected_encoding).strip(),
+                    "前走3競走成績キー": byte_str[235:251].decode(detected_encoding).strip(),
+                    "前走4競走成績キー": byte_str[251:267].decode(detected_encoding).strip(),
+                    "前走5競走成績キー": byte_str[267:283].decode(detected_encoding).strip(),
+                    "前走1レースキー": byte_str[283:291].decode(detected_encoding).strip(),
+                    "前走2レースキー": byte_str[291:299].decode(detected_encoding).strip(),
+                    "前走3レースキー": byte_str[299:307].decode(detected_encoding).strip(),
+                    "前走4レースキー": byte_str[307:315].decode(detected_encoding).strip(),
+                    "前走5レースキー": byte_str[315:323].decode(detected_encoding).strip(),
+                    "枠番": byte_str[323:324].decode(detected_encoding).strip(),
+                    "予備5": byte_str[324:326].decode(detected_encoding).strip(),
+                    "総合印": byte_str[326:327].decode(detected_encoding).strip(),
+                    "IDM印": byte_str[327:328].decode(detected_encoding).strip(),
+                    "情報印": byte_str[328:329].decode(detected_encoding).strip(),
+                    "騎手印": byte_str[329:330].decode(detected_encoding).strip(),
+                    "厩舎印": byte_str[330:331].decode(detected_encoding).strip(),
+                    "調教印": byte_str[331:332].decode(detected_encoding).strip(),
+                    "激走印": byte_str[332:333].decode(detected_encoding).strip(),
+                    "芝適性コード": byte_str[333:334].decode(detected_encoding).strip(),
+                    "ダ適性コード": byte_str[334:335].decode(detected_encoding).strip(),
+                    "騎手コード": byte_str[335:340].decode(detected_encoding).strip(),
+                    "調教師コード": byte_str[340:345].decode(detected_encoding).strip(),
+                    "予備6": byte_str[345:346].decode(detected_encoding).strip(),
+                    "賞金情報_獲得賞金": byte_str[346:352].decode(detected_encoding).strip(),
+                    "賞金情報_収得賞金": byte_str[352:357].decode(detected_encoding).strip(),
+                    "条件クラス": byte_str[357:358].decode(detected_encoding).strip(),
+                    "テン指数": byte_str[358:363].decode(detected_encoding).strip(),
+                    "ペース指数": byte_str[363:368].decode(detected_encoding).strip(),
+                    "上がり指数": byte_str[368:373].decode(detected_encoding).strip(),
+                    "位置指数": byte_str[373:378].decode(detected_encoding).strip(),
+                    "ペース予想": byte_str[378:379].decode(detected_encoding).strip(),
+                    "道中順位": byte_str[379:381].decode(detected_encoding).strip(),
+                    "道中差": byte_str[381:383].decode(detected_encoding).strip(),
+                    "道中内外": byte_str[383:384].decode(detected_encoding).strip(),
+                    "後3F順位": byte_str[384:386].decode(detected_encoding).strip(),
+                    "後3F差": byte_str[386:388].decode(detected_encoding).strip(),
+                    "後3F内外": byte_str[388:389].decode(detected_encoding).strip(),
+                    "ゴール順位": byte_str[389:391].decode(detected_encoding).strip(),
+                    "ゴール差": byte_str[391:393].decode(detected_encoding).strip(),
+                    "ゴール内外": byte_str[393:394].decode(detected_encoding).strip(),
+                    "展開記号": byte_str[394:395].decode(detected_encoding).strip(),
+                    "距離適性２": byte_str[395:396].decode(detected_encoding).strip(),
+                    "枠確定馬体重": byte_str[396:399].decode(detected_encoding).strip(),
+                    "枠確定馬体重増減": byte_str[399:402].decode(detected_encoding).strip(),
+                    "取消フラグ": byte_str[402:403].decode(detected_encoding).strip(),
+                    "性別コード": byte_str[403:404].decode(detected_encoding).strip(),
+                    "馬主名": byte_str[404:444].decode(detected_encoding).strip(),
+                    "馬主会コード": byte_str[444:446].decode(detected_encoding).strip(),
+                    "馬記号コード": byte_str[446:448].decode(detected_encoding).strip(),
+                    "激走順位": byte_str[448:450].decode(detected_encoding).strip(),
+                    "LS指数順位": byte_str[450:452].decode(detected_encoding).strip(),
+                    "テン指数順位": byte_str[452:454].decode(detected_encoding).strip(),
+                    "ペース指数順位": byte_str[454:456].decode(detected_encoding).strip(),
+                    "上がり指数順位": byte_str[456:458].decode(detected_encoding).strip(),
+                    "位置指数順位": byte_str[458:460].decode(detected_encoding).strip(),
+                    "騎手期待単勝率": byte_str[460:464].decode(detected_encoding).strip(),
+                    "騎手期待３着内率": byte_str[464:468].decode(detected_encoding).strip(),
+                    "輸送区分": byte_str[468:469].decode(detected_encoding).strip(),
+                    "走法": byte_str[469:477].decode(detected_encoding).strip(),
+                    "体型": byte_str[477:501].decode(detected_encoding).strip(),
+                    "体型総合１": byte_str[501:504].decode(detected_encoding).strip(),
+                    "体型総合２": byte_str[504:507].decode(detected_encoding).strip(),
+                    "体型総合３": byte_str[507:510].decode(detected_encoding).strip(),
+                    "馬特記１": byte_str[510:513].decode(detected_encoding).strip(),
+                    "馬特記２": byte_str[513:516].decode(detected_encoding).strip(),
+                    "馬特記３": byte_str[516:519].decode(detected_encoding).strip(),
+                    "馬スタート指数": byte_str[519:523].decode(detected_encoding).strip(),
+                    "馬出遅率": byte_str[523:527].decode(detected_encoding).strip(),
+                    "参考前走": byte_str[527:529].decode(detected_encoding).strip(),
+                    "参考前走騎手コード": byte_str[529:534].decode(detected_encoding).strip(),
+                    "万券指数": byte_str[534:537].decode(detected_encoding).strip(),
+                    "万券印": byte_str[537:538].decode(detected_encoding).strip(),
+                    "降級フラグ": byte_str[538:539].decode(detected_encoding).strip(),
+                    "激走タイプ": byte_str[539:541].decode(detected_encoding).strip(),
+                    "休養理由分類コード": byte_str[541:543].decode(detected_encoding).strip(),
+                    "フラグ": byte_str[543:559].decode(detected_encoding).strip(),
+                    "入厩何走目": byte_str[559:561].decode(detected_encoding).strip(),
+                    "入厩年月日": byte_str[561:569].decode(detected_encoding).strip(),
+                    "入厩何日前": byte_str[569:572].decode(detected_encoding).strip(),
+                    "放牧先": byte_str[572:622].decode(detected_encoding).strip(),
+                    "放牧先ランク": byte_str[622:623].decode(detected_encoding).strip(),
+                    "厩舎ランク": byte_str[623:624].decode(detected_encoding).strip(),
+                    "予備7": byte_str[624:1022].decode(detected_encoding).strip(),
+                    "改行": byte_str[1022:1024].decode(detected_encoding).strip(),
+                }
+
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+
+                data_list.append(data)
+
         return pd.DataFrame(data_list)
 
     def read_and_convert_kza(self, file_path):
