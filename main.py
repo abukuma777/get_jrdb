@@ -38,6 +38,11 @@ download_folder = "/app/data/jrdb_txt"
 # bac_converter = JRDBFileConverter(File_type)
 # bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
+# SED
+File_type = "SED"
+bac_converter = JRDBFileConverter(File_type)
+bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
 # # cp932
 # # CZA
 # File_type = "CZA"
