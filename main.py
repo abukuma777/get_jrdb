@@ -24,32 +24,32 @@ download_folder = "/app/data/jrdb_txt"
 # # 2. txt(エンコードバラバラ)->csv(UTF-8)
 # # ----------------------------------------
 
-# # SHIFT_JIS
-# # BAC
-# File_type = "BAC"
-# bac_converter = JRDBFileConverter(File_type)
-# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
-
-# # JOA
-# File_type = "JOA"
-# bac_converter = JRDBFileConverter(File_type)
-# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
-
-# # KZA
-# File_type = "KZA"
-# bac_converter = JRDBFileConverter(File_type)
-# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
-
-# SED
-File_type = "SED"
+# SHIFT_JIS
+# BAC
+File_type = "BAC"
 bac_converter = JRDBFileConverter(File_type)
 bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# # cp932
-# # CZA
-# File_type = "CZA"
-# cza_converter = JRDBFileConverter(File_type)
-# cza_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# CZA
+File_type = "CZA"
+cza_converter = JRDBFileConverter(File_type)
+cza_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# JOA
+File_type = "JOA"
+bac_converter = JRDBFileConverter(File_type)
+bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# KZA
+File_type = "KZA"
+bac_converter = JRDBFileConverter(File_type)
+bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# # SED
+# File_type = "SED"
+# bac_converter = JRDBFileConverter(File_type)
+# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 
 # TODO: ZED, ZKBは保留
