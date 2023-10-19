@@ -26,35 +26,63 @@ download_folder = "/app/data/jrdb_txt"
 
 # # BAC
 # File_type = "BAC"
-# bac_converter = JRDBFileConverter(File_type)
-# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# CHA
-File_type = "CHA"
-cza_converter = JRDBFileConverter(File_type)
-cza_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# # CHA
+# File_type = "CHA"
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# # CYB
+# File_type = "CYB"
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 # # CZA
 # File_type = "CZA"
-# cza_converter = JRDBFileConverter(File_type)
-# cza_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 # # JOA
 # File_type = "JOA"
-# bac_converter = JRDBFileConverter(File_type)
-# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# KAB
+File_type = "KAB"
+converter = JRDBFileConverter(File_type)
+converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# TODO: KKA
+# TODO: KYI
 
 # # KZA
 # File_type = "KZA"
-# bac_converter = JRDBFileConverter(File_type)
-# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# TODO: MZA
+# TODO: OT
+# TODO: OU
+# TODO: OV
+# TODO: OW
+# TODO: OZ
 
 # # SED
 # File_type = "SED"
-# bac_converter = JRDBFileConverter(File_type)
-# bac_converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# TODO: KSB
+# TODO: SRB
+# TODO: UKC
 
 
-# TODO: ZED, ZKBは保留
+# TODO: ZEDは保留
 # # ZED
 # File_type = "ZED"
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# TODO: ZKB

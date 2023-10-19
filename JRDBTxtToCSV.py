@@ -39,10 +39,17 @@ class JRDBFileConverter:
             return self.read_and_convert_bac(file_path)
         elif self.file_type == "CHA":
             return self.read_and_convert_cha(file_path)
+        elif self.file_type == "CYB":
+            return self.read_and_convert_cyb(file_path)
         elif self.file_type == "CZA":
             return self.read_and_convert_cza(file_path)
         elif self.file_type == "JOA":
             return self.read_and_convert_joa(file_path)
+        elif self.file_type == "KAB":
+            return self.read_and_convert_kab(file_path)
+
+        # TODO: KKA
+        # TODO: KYI
         elif self.file_type == "KZA":
             return self.read_and_convert_kza(file_path)
         elif self.file_type == "SED":
@@ -158,7 +165,7 @@ class JRDBFileConverter:
                     "場コード": byte_str[0:2].decode(detected_encoding).strip(),
                     "年": byte_str[2:4].decode(detected_encoding).strip(),
                     "回": byte_str[4:5].decode(detected_encoding).strip(),
-                    "日": byte_str[5:6].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
                     "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
                     "馬番": byte_str[8:10].decode(detected_encoding).strip(),
                     "曜日": byte_str[10:12].decode(detected_encoding).strip(),
@@ -189,6 +196,58 @@ class JRDBFileConverter:
                 # データリストに行データを追加
                 data_list.append(data)
         # データリストからデータフレームを作成して返す
+        return pd.DataFrame(data_list)
+
+    def read_and_convert_cyb(self, file_path):
+        """
+        CYB ファイルを読み込み、データフレームに変換する。
+
+        Parameters:
+        - file_path (str): 読み込むCYBファイルのパス。
+
+        Returns:
+        - pd.DataFrame: CYBファイルの内容を格納したデータフレーム。
+        """
+        data_list = []
+        detected_encoding = detect_encoding(file_path)
+
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                byte_str = line.encode(detected_encoding)
+                data = {
+                    "場コード": byte_str[0:2].decode(detected_encoding).strip(),
+                    "年": byte_str[2:4].decode(detected_encoding).strip(),
+                    "回": byte_str[4:5].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
+                    "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
+                    "馬番": byte_str[8:10].decode(detected_encoding).strip(),
+                    "調教タイプ": byte_str[10:12].decode(detected_encoding).strip(),
+                    "調教コース種別": byte_str[12:13].decode(detected_encoding).strip(),
+                    "坂": byte_str[13:15].decode(detected_encoding).strip(),
+                    "Ｗ": byte_str[15:17].decode(detected_encoding).strip(),
+                    "ダ": byte_str[17:19].decode(detected_encoding).strip(),
+                    "芝": byte_str[19:21].decode(detected_encoding).strip(),
+                    "プ": byte_str[21:23].decode(detected_encoding).strip(),
+                    "障": byte_str[23:25].decode(detected_encoding).strip(),
+                    "ポ": byte_str[25:27].decode(detected_encoding).strip(),
+                    "調教距離": byte_str[27:28].decode(detected_encoding).strip(),
+                    "調教重点": byte_str[28:29].decode(detected_encoding).strip(),
+                    "追切指数": byte_str[29:32].decode(detected_encoding).strip(),
+                    "仕上指数": byte_str[32:35].decode(detected_encoding).strip(),
+                    "調教量評価": byte_str[35:36].decode(detected_encoding).strip(),
+                    "仕上指数変化": byte_str[36:37].decode(detected_encoding).strip(),
+                    "調教コメント": byte_str[37:77].decode(detected_encoding).strip(),
+                    "コメント年月日": byte_str[77:85].decode(detected_encoding).strip(),
+                    "調教評価": byte_str[85:86].decode(detected_encoding).strip(),
+                    "一週前追切指数": byte_str[86:89].decode(detected_encoding).strip(),
+                    "一週前追切コース": byte_str[89:91].decode(detected_encoding).strip(),
+                    "予備": byte_str[91:94].decode(detected_encoding).strip(),
+                }
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+                data_list.append(data)
+
         return pd.DataFrame(data_list)
 
     def read_and_convert_cza(self, file_path):
@@ -307,6 +366,64 @@ class JRDBFileConverter:
                 data_list.append(data)
 
         # データリストからデータフレームを作成して返す
+        return pd.DataFrame(data_list)
+
+    def read_and_convert_kab(self, file_path):
+        """
+        KAB ファイルを読み込み、データフレームに変換する。
+
+        Parameters:
+        - file_path (str): 読み込むKABファイルのパス。
+
+        Returns:
+        - pd.DataFrame: KABファイルの内容を格納したデータフレーム。
+        """
+        data_list = []
+        # detected_encoding = detect_encoding(file_path)
+        detected_encoding = "SHIFT_JIS"
+
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                byte_str = line.encode(detected_encoding)
+                data = {
+                    "場コード": byte_str[0:2].decode(detected_encoding).strip(),
+                    "年": byte_str[2:4].decode(detected_encoding).strip(),
+                    "回": byte_str[4:5].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
+                    "年月日": byte_str[6:14].decode(detected_encoding).strip(),
+                    "開催区分": byte_str[14:15].decode(detected_encoding).strip(),
+                    "曜日": byte_str[15:17].decode(detected_encoding).strip(),
+                    "場名": byte_str[17:21].decode(detected_encoding).strip(),
+                    "天候コード": byte_str[21:22].decode(detected_encoding).strip(),
+                    "芝馬場状態コード": byte_str[22:24].decode(detected_encoding).strip(),
+                    "芝馬場状態内": byte_str[24:25].decode(detected_encoding).strip(),
+                    "芝馬場状態中": byte_str[25:26].decode(detected_encoding).strip(),
+                    "芝馬場状態外": byte_str[26:27].decode(detected_encoding).strip(),
+                    "芝馬場差": byte_str[27:30].decode(detected_encoding).strip(),
+                    "直線馬場差最内": byte_str[30:32].decode(detected_encoding).strip(),
+                    "直線馬場差内": byte_str[32:34].decode(detected_encoding).strip(),
+                    "直線馬場差中": byte_str[34:36].decode(detected_encoding).strip(),
+                    "直線馬場差外": byte_str[36:38].decode(detected_encoding).strip(),
+                    "直線馬場差大外": byte_str[38:40].decode(detected_encoding).strip(),
+                    "ダ馬場状態コード": byte_str[40:42].decode(detected_encoding).strip(),
+                    "ダ馬場状態内": byte_str[42:43].decode(detected_encoding).strip(),
+                    "ダ馬場状態中": byte_str[43:44].decode(detected_encoding).strip(),
+                    "ダ馬場状態外": byte_str[44:45].decode(detected_encoding).strip(),
+                    "ダ馬場差": byte_str[45:48].decode(detected_encoding).strip(),
+                    "データ区分": byte_str[48:49].decode(detected_encoding).strip(),
+                    "連続何日目": byte_str[49:51].decode(detected_encoding).strip(),
+                    "芝種類": byte_str[51:52].decode(detected_encoding).strip(),
+                    "草丈": byte_str[52:56].decode(detected_encoding).strip(),
+                    "転圧": byte_str[56:57].decode(detected_encoding).strip(),
+                    "凍結防止剤": byte_str[57:58].decode(detected_encoding).strip(),
+                    "中間降水量": byte_str[58:63].decode(detected_encoding).strip(),
+                    "予備": byte_str[63:70].decode(detected_encoding).strip(),
+                }
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+                data_list.append(data)
+
         return pd.DataFrame(data_list)
 
     def read_and_convert_kza(self, file_path):
