@@ -1,9 +1,10 @@
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import numpy as np  # np.nanを使用するために追加
 import pandas as pd
-from lib_func import detect_encoding, ensure_directory_exists, hex_to_dec
+from lib_func import detect_encoding, hex_to_dec
 from tqdm import tqdm
 
 
@@ -88,7 +89,7 @@ class JRDBFileConverter:
                     "場コード": byte_str[0:2].decode(detected_encoding).strip(),
                     "年": byte_str[2:4].decode(detected_encoding).strip(),
                     "回": byte_str[4:5].decode(detected_encoding).strip(),
-                    "日": byte_str[5:6].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
                     "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
                     "年月日": byte_str[8:16].decode(detected_encoding).strip(),
                     "発走時間": byte_str[16:20].decode(detected_encoding).strip(),
@@ -333,7 +334,7 @@ class JRDBFileConverter:
                     "場コード": byte_str[0:2].decode(detected_encoding).strip(),
                     "年": byte_str[2:4].decode(detected_encoding).strip(),
                     "回": byte_str[4:5].decode(detected_encoding).strip(),
-                    "日": byte_str[5:6].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
                     "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
                     "馬番": byte_str[8:10].decode(detected_encoding).strip(),
                     "血統登録番号": byte_str[10:18].decode(detected_encoding).strip(),
@@ -426,44 +427,40 @@ class JRDBFileConverter:
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
 
-    def save_to_csv(self, File_type, base_input_directory, output_directory):
-        """
-        指定されたディレクトリ内のファイルを読み込み、CSVに変換して保存する。
+    def process_files(self, input_directory_path, temp_dir):
+        filenames = os.listdir(input_directory_path)
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            future_to_file = {
+                executor.submit(self.read_and_convert, os.path.join(input_directory_path, filename)): filename
+                for filename in filenames
+                if filename.endswith(".txt")
+            }
+            for future in tqdm(as_completed(future_to_file), total=len(future_to_file)):
+                filename = future_to_file[future]
+                try:
+                    df = future.result()
+                    # Save each DataFrame to a temporary CSV file
+                    temp_csv_path = os.path.join(temp_dir, f"{filename}.csv")
+                    df.to_csv(temp_csv_path, index=False)
+                except Exception as e:
+                    print(f"Error occurred while processing {filename}: {e}")
 
-        Parameters:
-        - base_input_directory (str): 読み込むファイルが格納されたディレクトリ。
-        - output_directory (str): CSVファイルを保存するディレクトリ。
-        """
-        # 入力と出力のディレクトリパス
+    def save_to_csv(self, File_type, base_input_directory, output_directory):
         base_input_directory_path = Path(base_input_directory)
         output_directory_path = Path(output_directory)
-        # 年度のフォルダをリストに格納
         years = [f.name for f in base_input_directory_path.iterdir() if f.is_dir()]
-        # 各年度のフォルダに対して処理を行う
         for year in tqdm(years):
             input_directory_path = base_input_directory_path / year
-            all_dfs = []  # 各年度のDataFrameを格納するリスト
+            temp_dir = os.path.join(output_directory, "temp")
+            os.makedirs(temp_dir, exist_ok=True)
+            self.process_files(input_directory_path, temp_dir)
 
-            # .txtファイルを読み込み、DataFrameに変換してリストに追加
-            for filename in os.listdir(input_directory_path):
-                # try:
-                #     if filename.endswith(".txt"):
-                #         file_path = os.path.join(input_directory_path, filename)
-                #         df = self.read_and_convert(file_path)
-                #         all_dfs.append(df)
-                # # エラーが起こった時用
-                # except Exception as e:
-                #     print(f"Error occurred while processing {filename}: {e}")
+            # Combine all temporary CSV files into one
+            csv_files = [os.path.join(temp_dir, f) for f in os.listdir(temp_dir) if f.endswith(".csv")]
+            combined_csv = pd.concat([pd.read_csv(f) for f in csv_files])
+            combined_csv.to_csv(output_directory_path / f"{File_type}_{year}.csv", index=False, encoding="utf-8")
 
-                if filename.endswith(".txt"):
-                    file_path = os.path.join(input_directory_path, filename)
-                    df = self.read_and_convert(file_path)
-                    all_dfs.append(df)
-
-            # すべてのDataFrameを結合
-            final_df = pd.concat(all_dfs, ignore_index=True)
-            # 出力ディレクトリが存在しない場合は作成
-            ensure_directory_exists(output_directory_path)
-            # 結合されたDataFrameをCSVとして保存
-            final_df.to_csv(output_directory_path / f"{File_type}_{year}.csv", encoding="utf-8", index=False)
-        return None
+            # Remove temporary CSV files
+            for f in csv_files:
+                os.remove(f)
+            os.rmdir(temp_dir)

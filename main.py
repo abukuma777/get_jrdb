@@ -1,3 +1,5 @@
+import cProfile
+
 from dl_data import download_and_organize_jrdb_data, download_KZA_CZA_MZA_data
 from JRDBTxtToCSV import JRDBFileConverter
 
