@@ -11,6 +11,7 @@ from tqdm import tqdm
 class JRDBFileConverter:
     """
     JRDBの特定のファイルタイプ（BAC、CZAなど）をCSVに変換するクラス。
+    基本的に、前処理はここでは行わないが、日列が16進数のためそれだけはここで変換しておく。
 
     Attributes:
     - file_type (str): 変換するファイルのタイプ（例：'BAC', 'CZA'）。
@@ -53,23 +54,32 @@ class JRDBFileConverter:
             return self.read_and_convert_kyi(file_path)
         elif self.file_type == "KZA":
             return self.read_and_convert_kza(file_path)
+        elif self.file_type == "MZA":
+            return self.read_and_convert_mza(file_path)
+        # TODO: OT
+        # TODO: OU
+        # TODO: OV
+        # TODO: OW
+        # TODO: OZ
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
         elif self.file_type == "SED":
             return self.read_and_convert_sed(file_path)
-
-        # elif self.file_type == "JOA":
-        #     return self.read_and_convert_joa(file_path)
-        # elif self.file_type == "JOA":
-        #     return self.read_and_convert_joa(file_path)
-        # elif self.file_type == "JOA":
-        #     return self.read_and_convert_joa(file_path)
-        # elif self.file_type == "JOA":
-        #     return self.read_and_convert_joa(file_path)
-        # elif self.file_type == "JOA":
-        #     return self.read_and_convert_joa(file_path)
+        # TODO: KSB
+        # TODO: SRB
+        # TODO: UKC
 
         # TODO: ZEDは保留
         # elif self.file_type == "ZED":
         #     return self.read_and_convert_bac(file_path)
+        # TODO: ZKB
+        # elif self.file_type == "JOA":
+        #     return self.read_and_convert_joa(file_path)
+
         else:
             raise ValueError("Unsupported file type")
 
@@ -711,6 +721,39 @@ class JRDBFileConverter:
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
 
+    def read_and_convert_mza(self, file_path):
+        """
+        MZA ファイルを読み込み、データフレームに変換する。
+
+        Parameters:
+        - file_path (str): 読み込むMZAファイルのパス。
+
+        Returns:
+        - pd.DataFrame: MZAファイルの内容を格納したデータフレーム。
+        """
+        data_list = []
+        detected_encoding = detect_encoding(file_path)
+
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                byte_str = line.encode(detected_encoding)
+                data = {
+                    "血統登録番号": byte_str[0:8].decode(detected_encoding).strip(),
+                    "予備": byte_str[8:14].decode(detected_encoding).strip(),
+                }
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+                data_list.append(data)
+
+        return pd.DataFrame(data_list)
+
+    # TODO: OT
+    # TODO: OU
+    # TODO: OV
+    # TODO: OW
+    # TODO: OZ
+
     def read_and_convert_sed(self, file_path):
         """
         JRDBのSEDファイルを読み込み、データフレームに変換する関数。
@@ -827,6 +870,12 @@ class JRDBFileConverter:
 
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
+
+    # TODO: KSB
+    # TODO: SRB
+    # TODO: UKC
+    # TODO: ZED
+    # TODO: ZKB
 
     def process_files(self, input_directory_path, temp_dir):
         filenames = os.listdir(input_directory_path)

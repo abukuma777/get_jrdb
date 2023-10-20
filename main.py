@@ -1,5 +1,3 @@
-import cProfile
-
 from dl_data import download_and_organize_jrdb_data, download_KZA_CZA_MZA_data
 from JRDBTxtToCSV import JRDBFileConverter
 
@@ -59,17 +57,21 @@ download_folder = "/app/data/jrdb_txt"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# KYI
-File_type = "KYI"
-converter = JRDBFileConverter(File_type)
-converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# # KYI
+# File_type = "KYI"
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 # # KZA
 # File_type = "KZA"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# TODO: MZA
+# MZA
+File_type = "MZA"
+converter = JRDBFileConverter(File_type)
+converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
 # TODO: OT
 # TODO: OU
 # TODO: OV
