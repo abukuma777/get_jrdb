@@ -72,7 +72,11 @@ File_type = "MZA"
 converter = JRDBFileConverter(File_type)
 converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# TODO: OT
+# OT
+File_type = "OT"
+converter = JRDBFileConverter(File_type)
+converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
 # TODO: OU
 # TODO: OV
 # TODO: OW
