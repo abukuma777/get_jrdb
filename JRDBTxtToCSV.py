@@ -64,13 +64,11 @@ class JRDBFileConverter:
             return self.read_and_convert_ov(file_path)
         elif self.file_type == "OW":
             return self.read_and_convert_ow(file_path)
-        # TODO: OZ
-        # elif self.file_type == "OZ":
-        #     return self.read_and_convert_oz(file_path)
-
+        elif self.file_type == "OZ":
+            return self.read_and_convert_oz(file_path)
         elif self.file_type == "SED":
             return self.read_and_convert_sed(file_path)
-        # TODO: KSB
+        # TODO: SKB
         # TODO: SRB
         # TODO: UKC
 
@@ -979,7 +977,64 @@ class JRDBFileConverter:
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
 
-    # TODO: OZ
+    def read_and_convert_oz(self, file_path):
+        """
+        OZ ファイルを読み込み、データフレームに変換する。
+
+        Parameters:
+        - file_path (str): 読み込むOZファイルのパス。
+
+        Returns:
+        - pd.DataFrame: OZファイルの内容を格納したデータフレーム。
+        """
+        # データを格納するための空のリスト
+        data_list = []
+
+        # ファイルのエンコーディングを検出
+        detected_encoding = detect_encoding(file_path)
+
+        # ファイルを開く
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                # 各行を指定されたエンコーディングでエンコード
+                byte_str = line.encode(detected_encoding)
+
+                # レースキー情報をスライスして抽出
+                race_key = {
+                    "場コード": byte_str[0:2].decode(detected_encoding).strip(),
+                    "年": byte_str[2:4].decode(detected_encoding).strip(),
+                    "回": byte_str[4:5].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
+                    "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
+                }
+
+                # 登録頭数をスライスして抽出
+                registered_head_count = byte_str[8:10].decode(detected_encoding).strip()
+
+                # 各種オッズをスライスして抽出
+                win_odds = [byte_str[i : i + 5].decode(detected_encoding).strip() for i in range(10, 100, 5)]
+                place_odds = [byte_str[i : i + 5].decode(detected_encoding).strip() for i in range(100, 190, 5)]
+                quinella_odds = [byte_str[i : i + 5].decode(detected_encoding).strip() for i in range(190, 955, 5)]
+
+                # 各項目をデータフレーム用の辞書にまとめる
+                data = {
+                    **race_key,
+                    "登録頭数": registered_head_count,
+                    "単勝オッズ": win_odds,
+                    "複勝オッズ": place_odds,
+                    "連勝オッズ": quinella_odds,
+                }
+
+                # 空白（" "）をNaNに置換
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+
+                # データリストに行データを追加
+                data_list.append(data)
+
+        # データリストからデータフレームを作成して返す
+        return pd.DataFrame(data_list)
 
     def read_and_convert_sed(self, file_path):
         """
