@@ -2,9 +2,11 @@ import os
 import re
 import shutil
 import subprocess
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import chardet
 import requests
+from tqdm import tqdm
 
 
 def ensure_directory_exists(directory):
@@ -151,3 +153,33 @@ def extract_and_move_file(tmp_file_path, download_folder):
         for entry in os.scandir("tmp/"):
             if entry.is_file() and entry.name.endswith(".txt"):
                 executor.submit(move_file, entry.name, download_folder)
+
+
+# JOAの'日'列用
+def hex_to_dec(x):
+    """
+    16進数（または10進数）の値を10進数に変換する関数。
+
+    Parameters:
+    - x (str or int): 16進数または10進数の値（文字列または整数）。
+
+    Returns:
+    - int: 10進数に変換された値。
+    """
+    hex_dict = {"a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15}
+    return hex_dict.get(x, x)
+
+
+def detect_encoding(file_path):
+    """
+    指定されたテキストファイルのエンコーディングを検出する関数。
+
+    Parameters:
+    - file_path (str): エンコーディングを検出するテキストファイルのパス。
+
+    Returns:
+    - str: 検出されたエンコーディング（例：'SHIFT_JIS', 'UTF-8'）。
+    """
+    with open(file_path, "rb") as f:
+        result = chardet.detect(f.read())
+    return result["encoding"]
