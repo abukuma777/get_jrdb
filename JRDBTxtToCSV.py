@@ -70,7 +70,8 @@ class JRDBFileConverter:
             return self.read_and_convert_sed(file_path)
         elif self.file_type == "SKB":
             return self.read_and_convert_skb(file_path)
-        # TODO: SRB
+        elif self.file_type == "SRB":
+            return self.read_and_convert_srb(file_path)
         # TODO: UKC
 
         # TODO: ZEDは保留
@@ -1203,62 +1204,47 @@ class JRDBFileConverter:
 
         return pd.DataFrame(data_list)
 
-    # def read_and_convert_skb(self, file_path):
-    #     """
-    #     JRDBのSKBファイルを読み込み、データフレームに変換する関数。
+    # SRB
+    def read_and_convert_srb(self, file_path):
+        data_list = []
+        # ファイルのエンコーディングを検出
+        detected_encoding = detect_encoding(file_path)
 
-    #     Parameters:
-    #     - file_path (str): 読み込むSKBファイルのパス。
+        # ファイルのエンコーディングでテキストファイルを開く
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                data = {
+                    "場コード": line[0:2].strip(),
+                    "年": line[2:4].strip(),
+                    "回": line[4:5].strip(),
+                    "日": hex_to_dec(line[5:6].strip()),
+                    "Ｒ": line[6:8].strip(),
+                    "ハロンタイム": [line[i : i + 3].strip() for i in range(8, 62, 3)],
+                    "１コーナー": line[62:126].strip(),
+                    "２コーナー": line[126:190].strip(),
+                    "３コーナー": line[190:254].strip(),
+                    "４コーナー": line[254:318].strip(),
+                    "ペースアップ位置": line[318:320].strip(),
+                    "１角トラックバイアス": line[320:323].strip(),
+                    "２角トラックバイアス": line[323:326].strip(),
+                    "向正トラックバイアス": line[326:329].strip(),
+                    "３角トラックバイアス": line[329:332].strip(),
+                    "４角トラックバイアス": line[332:337].strip(),
+                    "直線トラックバイアス": line[337:342].strip(),
+                    "レースコメント": line[342:842].strip(),
+                    "予備": line[842:850].strip(),
+                }
 
-    #     Returns:
-    #     - pd.DataFrame: SKBファイルの内容を格納したデータフレーム。
-    #     """
-    #     data_list = []
-    #     detected_encoding = "CP932"
+                # スペースをNaNに置換
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
 
-    #     with open(file_path, "r", encoding=detected_encoding, errors="replace") as f:
-    #         for line in f:
-    #             byte_str = line.encode(detected_encoding)
+                # データリストに行データを追加
+                data_list.append(data)
 
-    #             data = {
-    #                 "場コード": byte_str[0:2].decode(detected_encoding).strip(),
-    #                 "年": byte_str[2:4].decode(detected_encoding).strip(),
-    #                 "回": byte_str[4:5].decode(detected_encoding).strip(),
-    #                 "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
-    #                 "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
-    #                 "馬番": byte_str[8:10].decode(detected_encoding).strip(),
-    #                 "血統登録番号": byte_str[10:18].decode(detected_encoding).strip(),
-    #                 "年月日": byte_str[18:26].decode(detected_encoding).strip(),
-    #                 "特記コード": [byte_str[i : i + 3].decode(detected_encoding).strip() for i in range(26, 44, 3)],
-    #                 "馬具コード": [byte_str[i : i + 3].decode(detected_encoding).strip() for i in range(44, 68, 3)],
-    #                 "脚元コード_総合": byte_str[68:71].decode(detected_encoding).strip(),
-    #                 "脚元コード_左前": byte_str[71:74].decode(detected_encoding).strip(),
-    #                 "脚元コード_右前": byte_str[74:77].decode(detected_encoding).strip(),
-    #                 "脚元コード_左後": byte_str[77:80].decode(detected_encoding).strip(),
-    #                 "脚元コード_右後": byte_str[80:83].decode(detected_encoding).strip(),
-    #                 "パドックコメント": byte_str[83:123].decode(detected_encoding).strip(),
-    #                 "脚元コメント": byte_str[123:163].decode(detected_encoding).strip(),
-    #                 "馬具(その他)コメント": byte_str[163:203].decode(detected_encoding).strip(),
-    #                 "レースコメント": byte_str[203:243].decode(detected_encoding).strip(),
-    #                 "ハミ": byte_str[243:246].decode(detected_encoding).strip(),
-    #                 "バンテージ": byte_str[246:249].decode(detected_encoding).strip(),
-    #                 "蹄鉄": byte_str[249:252].decode(detected_encoding).strip(),
-    #                 "蹄状態": byte_str[252:255].decode(detected_encoding).strip(),
-    #                 "ソエ": byte_str[255:258].decode(detected_encoding).strip(),
-    #                 "骨瘤": byte_str[258:261].decode(detected_encoding).strip(),
-    #                 "予備": byte_str[261:272].decode(detected_encoding).strip(),
-    #             }
-    #             # スペースをNaNに置換
-    #             for key, value in data.items():
-    #                 if value == " ":
-    #                     data[key] = np.nan
+        return pd.DataFrame(data_list)
 
-    #             # データリストに行データを追加
-    #             data_list.append(data)
-
-    #     return pd.DataFrame(data_list)
-
-    # TODO: SRB
     # TODO: UKC
     # TODO: ZED
     # TODO: ZKB
