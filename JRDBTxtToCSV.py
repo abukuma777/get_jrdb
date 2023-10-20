@@ -60,8 +60,8 @@ class JRDBFileConverter:
             return self.read_and_convert_ot(file_path)
         elif self.file_type == "OU":
             return self.read_and_convert_ou(file_path)
-
-        # TODO: OV
+        elif self.file_type == "OV":
+            return self.read_and_convert_ov(file_path)
         # TODO: OW
         # TODO: OZ
         # elif self.file_type == "JOA":
@@ -865,7 +865,64 @@ class JRDBFileConverter:
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
 
-    # TODO: OV
+    # OV
+    def read_and_convert_ov(self, file_path):
+        """
+        OV ファイルを読み込み、データフレームに変換する。
+
+        Parameters:
+        - file_path (str): 読み込むOVファイルのパス。
+
+        Returns:
+        - pd.DataFrame: OVファイルの内容を格納したデータフレーム。
+        """
+        # データを格納するための空のリスト
+        data_list = []
+
+        # ファイルのエンコーディングを検出
+        detected_encoding = detect_encoding(file_path)
+
+        # ファイルを開く
+        with open(file_path, "r", encoding=detected_encoding) as f:
+            for line in f:
+                # 各行を指定されたエンコーディングでエンコード
+                byte_str = line.encode(detected_encoding)
+
+                # レースキー情報をスライスして抽出
+                race_key = {
+                    "場コード": byte_str[0:2].decode(detected_encoding).strip(),
+                    "年": byte_str[2:4].decode(detected_encoding).strip(),
+                    "回": byte_str[4:5].decode(detected_encoding).strip(),
+                    "日": hex_to_dec(byte_str[5:6].decode(detected_encoding).strip()),
+                    "Ｒ": byte_str[6:8].decode(detected_encoding).strip(),
+                }
+
+                # 登録頭数をスライスして抽出
+                registered_head_count = byte_str[8:10].decode(detected_encoding).strip()
+
+                # ３連単オッズをスライスして抽出（4896項目、各7バイト）
+                # インデックスは10から始まり、7バイトごとにスライス
+                trifecta_odds = [byte_str[i : i + 7].decode(detected_encoding).strip() for i in range(10, 34282, 7)]
+
+                # 各項目をデータフレーム用の辞書にまとめる
+                data = {
+                    **race_key,
+                    "登録頭数": registered_head_count,
+                    "３連単オッズ": trifecta_odds,
+                    "予備": byte_str[34282:34286].decode(detected_encoding).strip(),
+                }
+
+                # 空白（" "）をNaNに置換
+                for key, value in data.items():
+                    if value == " ":
+                        data[key] = np.nan
+
+                # データリストに行データを追加
+                data_list.append(data)
+
+        # データリストからデータフレームを作成して返す
+        return pd.DataFrame(data_list)
+
     # TODO: OW
     # TODO: OZ
 

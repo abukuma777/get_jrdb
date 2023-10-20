@@ -77,12 +77,16 @@ download_folder = "/app/data/jrdb_txt"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# OU
-File_type = "OU"
+# # OU
+# File_type = "OU"
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# OV
+File_type = "OV"
 converter = JRDBFileConverter(File_type)
 converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# TODO: OV
 # TODO: OW
 # TODO: OZ
 
