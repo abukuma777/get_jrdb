@@ -2,9 +2,10 @@ import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+import chardet
 import numpy as np  # np.nanを使用するために追加
 import pandas as pd
-from lib_func import detect_encoding, hex_to_dec
+from lib_func import hex_to_dec
 from tqdm import tqdm
 
 
@@ -77,6 +78,24 @@ class JRDBFileConverter:
         else:
             raise ValueError("Unsupported file type")
 
+    def detect_encoding(self, file_path):
+        """
+        指定されたテキストファイルのエンコーディングを検出します。
+
+        Parameters:
+        - file_path (str): エンコーディングを検出するテキストファイルのパス。
+
+        Returns:
+        - str: 検出されたエンコーディング（例：'SHIFT_JIS', 'UTF-8'）。
+        """
+        if self.file_type == "CHA":
+            detected_encoding = "SHIFT_JIS"
+        else:
+            with open(file_path, "rb") as f:
+                result = chardet.detect(f.read())
+            detected_encoding = result["encoding"]
+        return detected_encoding
+
     def read_and_convert_bac(self, file_path):
         """
         BACファイルを読み込み、データフレームに変換する。
@@ -90,7 +109,7 @@ class JRDBFileConverter:
         # 空のリストを作成して、各行のデータを格納する
         data_list = []
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # バイナリモードでファイルを開く
         with open(file_path, "rb") as f:
@@ -155,10 +174,10 @@ class JRDBFileConverter:
         data_list = []
         # ファイルのエンコーディングを検出
         # detected_encoding = "SHIFT_JIS"
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # バイナリモードでファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各フィールドをバイト単位でスライスし、デコードしてデータを格納
                 data = {
@@ -209,9 +228,9 @@ class JRDBFileConverter:
         - pd.DataFrame: CYBファイルの内容を格納したデータフレーム。
         """
         data_list = []
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 data = {
                     "場コード": line[0:2].decode(detected_encoding).strip(),
@@ -262,9 +281,9 @@ class JRDBFileConverter:
         # 空のリストを作成して、各行のデータを格納する
         data_list = []
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
         # バイナリモードでファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各フィールドをバイト単位でスライスし、デコードしてデータを格納
                 data = {
@@ -320,9 +339,9 @@ class JRDBFileConverter:
         # 空のリストを作成して、各行のデータを格納する
         data_list = []
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
         # バイナリモードでファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各フィールドをバイト単位でスライスし、デコードしてデータを格納
                 data = {
@@ -375,9 +394,9 @@ class JRDBFileConverter:
         """
         data_list = []
         # detected_encoding = "SHIFT_JIS"
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 data = {
                     "場コード": line[0:2].decode(detected_encoding).strip(),
@@ -431,9 +450,9 @@ class JRDBFileConverter:
         - pd.DataFrame: KKAファイルの内容を格納したデータフレーム。
         """
         data_list = []
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 data = {
                     "場コード": line[0:2].decode(detected_encoding).strip(),
@@ -491,9 +510,9 @@ class JRDBFileConverter:
         - pd.DataFrame: KYIファイルの内容を格納したデータフレーム。
         """
         data_list = []
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 data = {
                     "場コード": line[0:2].decode(detected_encoding).strip(),
@@ -654,9 +673,9 @@ class JRDBFileConverter:
         # 空のリストを作成して、各行のデータを格納する
         data_list = []
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
         # バイナリモードでファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各フィールドをバイト単位でスライスし、デコードしてデータを格納
                 data = {
@@ -712,9 +731,9 @@ class JRDBFileConverter:
         - pd.DataFrame: MZAファイルの内容を格納したデータフレーム。
         """
         data_list = []
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 data = {
                     "血統登録番号": line[0:8].decode(detected_encoding).strip(),
@@ -741,10 +760,10 @@ class JRDBFileConverter:
         data_list = []
 
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # ファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各行を指定されたエンコーディングでエンコード
 
@@ -797,10 +816,10 @@ class JRDBFileConverter:
         data_list = []
 
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # ファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各行を指定されたエンコーディングでエンコード
 
@@ -854,10 +873,10 @@ class JRDBFileConverter:
         data_list = []
 
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # ファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各行を指定されたエンコーディングでエンコード
 
@@ -911,10 +930,10 @@ class JRDBFileConverter:
         data_list = []
 
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # ファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各行を指定されたエンコーディングでエンコード
 
@@ -967,10 +986,10 @@ class JRDBFileConverter:
         data_list = []
 
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # ファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各行を指定されたエンコーディングでエンコード
 
@@ -1024,9 +1043,9 @@ class JRDBFileConverter:
         # 空のリストを作成して、各行のデータを格納する
         data_list = []
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
         # バイナリモードでファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 # 各フィールドをバイト単位でスライスし、デコードしてデータを格納
                 data = {
@@ -1131,10 +1150,10 @@ class JRDBFileConverter:
         data_list = []
 
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # バイナリモードでファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 data = {
                     "場コード": line[0:2].decode(detected_encoding).strip(),
@@ -1180,10 +1199,10 @@ class JRDBFileConverter:
         data_list = []
 
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # バイナリモードでファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 data = {
                     "場コード": line[0:2].decode(detected_encoding).strip(),
@@ -1222,10 +1241,10 @@ class JRDBFileConverter:
         data_list = []
 
         # ファイルのエンコーディングを検出
-        detected_encoding = detect_encoding(file_path)
+        detected_encoding = self.detect_encoding(file_path)
 
         # バイナリモードでファイルを開く
-        with open(file_path, "rb", encoding=detected_encoding) as f:
+        with open(file_path, "rb") as f:
             for line in f:
                 data = {
                     "血統登録番号": line[0:8].decode(detected_encoding).strip(),
