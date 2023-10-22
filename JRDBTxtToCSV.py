@@ -72,7 +72,8 @@ class JRDBFileConverter:
             return self.read_and_convert_skb(file_path)
         elif self.file_type == "SRB":
             return self.read_and_convert_srb(file_path)
-        # TODO: UKC
+        elif self.file_type == "UKC":
+            return self.read_and_convert_ukc(file_path)
 
         # TODO: ZEDは保留
         # elif self.file_type == "ZED":
@@ -1245,7 +1246,51 @@ class JRDBFileConverter:
 
         return pd.DataFrame(data_list)
 
-    # TODO: UKC
+    # UKC
+    def read_and_convert_ukc(self, file_path):
+        data_list = []
+        # ファイルのエンコーディングを検出
+        detected_encoding = detect_encoding(file_path)
+
+        # バイナリモードでファイルを開く
+        with open(file_path, "rb") as f:
+            for line in f:
+                cursor = 0
+                data = {}
+                # 各フィールドのバイト数とキー名を辞書で定義
+                byte_dict = {
+                    "血統登録番号": 8,
+                    "馬名": 36,
+                    "性別コード": 1,
+                    "毛色コード": 2,
+                    "馬記号コード": 2,
+                    "父馬名": 36,
+                    "母馬名": 36,
+                    "母父馬名": 36,
+                    "生年月日": 8,
+                    "父馬生年": 4,
+                    "母馬生年": 4,
+                    "母父馬生年": 4,
+                    "馬主名": 40,
+                    "馬主会コード": 2,
+                    "生産者名": 40,
+                    "産地名": 8,
+                    "登録抹消フラグ": 1,
+                    "データ年月日": 8,
+                    "父系統コード": 4,
+                    "母父系統コード": 4,
+                    "予備": 6,
+                }
+
+                for key, byte_range in byte_dict.items():
+                    value = line[cursor : cursor + byte_range].decode(detected_encoding).strip()
+                    data[key] = value if value != " " else np.nan
+                    cursor += byte_range
+
+                data_list.append(data)
+
+        return pd.DataFrame(data_list)
+
     # TODO: ZED
     # TODO: ZKB
 

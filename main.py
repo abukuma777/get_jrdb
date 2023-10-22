@@ -103,18 +103,22 @@ download_folder = "/app/data/jrdb_txt"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
+# TODO: 以下動確済み
 # # SKB
 # File_type = "SKB"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 
-# SRB
-File_type = "SRB"
+# # SRB
+# File_type = "SRB"
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# UKC
+File_type = "UKC"
 converter = JRDBFileConverter(File_type)
 converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
-
-# TODO: UKC
 
 
 # TODO: ZEDは保留
