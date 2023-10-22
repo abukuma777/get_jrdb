@@ -22,14 +22,10 @@ download_folder = "/app/data/jrdb_txt"
 # # 2. txt(エンコードバラバラ)->csv(UTF-8)
 # # ----------------------------------------
 
-# # BAC
-# File_type = "BAC"
-# converter = JRDBFileConverter(File_type)
-# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
-# # BAC
-# File_type = "BAC"
-# converter = JRDBFileConverter(File_type)
-# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# BAC
+File_type = "BAC"
+converter = JRDBFileConverter(File_type)
+converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 
 # # CHA
@@ -119,10 +115,10 @@ download_folder = "/app/data/jrdb_txt"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# UKC
-File_type = "UKC"
-converter = JRDBFileConverter(File_type)
-converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+# # UKC
+# File_type = "UKC"
+# converter = JRDBFileConverter(File_type)
+# converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 
 # # ZED
