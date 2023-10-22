@@ -22,16 +22,16 @@ download_folder = "/app/data/jrdb_txt"
 # # 2. txt(エンコードバラバラ)->csv(UTF-8)
 # # ----------------------------------------
 
-# BAC
-File_type = "BAC"
-converter = JRDBFileConverter(File_type)
-converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
-
-
-# # CHA
-# File_type = "CHA"
+# # BAC
+# File_type = "BAC"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+
+# CHA
+File_type = "CHA"
+converter = JRDBFileConverter(File_type)
+converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 # # CYB
 # File_type = "CYB"

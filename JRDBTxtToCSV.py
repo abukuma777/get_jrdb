@@ -88,6 +88,7 @@ class JRDBFileConverter:
         Returns:
         - str: 検出されたエンコーディング（例：'SHIFT_JIS', 'UTF-8'）。
         """
+        # TODO: KAB?
         if self.file_type == "CHA":
             detected_encoding = "SHIFT_JIS"
         else:
