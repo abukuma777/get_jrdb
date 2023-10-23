@@ -88,9 +88,10 @@ class JRDBFileConverter:
         Returns:
         - str: 検出されたエンコーディング（例：'SHIFT_JIS', 'UTF-8'）。
         """
-        # TODO: KAB?
         if self.file_type == "CHA" or self.file_type == "KAB":
             detected_encoding = "SHIFT_JIS"
+        # elif self.file_type == "SKB":
+        #     detected_encoding = "CP932"
         else:
             with open(file_path, "rb") as f:
                 result = chardet.detect(f.read())
@@ -1171,26 +1172,25 @@ class JRDBFileConverter:
                     "馬番": line[8:10].decode(detected_encoding).strip(),
                     "血統登録番号": line[10:18].decode(detected_encoding).strip(),
                     "年月日": line[18:26].decode(detected_encoding).strip(),
-                    "特記コード": [line[i : i + 3].decode(detected_encoding).strip() for i in range(26, 44, 3)],
-                    "馬具コード": [line[i : i + 3].decode(detected_encoding).strip() for i in range(44, 68, 3)],
-                    "脚元コード_総合": line[68:71].decode(detected_encoding).strip(),
-                    "脚元コード_左前": line[71:74].decode(detected_encoding).strip(),
-                    "脚元コード_右前": line[74:77].decode(detected_encoding).strip(),
-                    "脚元コード_左後": line[77:80].decode(detected_encoding).strip(),
-                    "脚元コード_右後": line[80:83].decode(detected_encoding).strip(),
-                    "パドックコメント": line[83:123].decode(detected_encoding).strip(),
-                    "脚元コメント": line[123:163].decode(detected_encoding).strip(),
-                    "馬具(その他)コメント": line[163:203].decode(detected_encoding).strip(),
-                    "レースコメント": line[203:243].decode(detected_encoding).strip(),
-                    "ハミ": line[243:246].decode(detected_encoding).strip(),
-                    "バンテージ": line[246:249].decode(detected_encoding).strip(),
-                    "蹄鉄": line[249:252].decode(detected_encoding).strip(),
-                    "蹄状態": line[252:255].decode(detected_encoding).strip(),
-                    "ソエ": line[255:258].decode(detected_encoding).strip(),
-                    "骨瘤": line[258:261].decode(detected_encoding).strip(),
-                    "予備": line[261:272].decode(detected_encoding).strip(),
+                    "特記コード": [line[i : i + 3].decode(detected_encoding).strip() for i in range(26, 26 + 6 * 3, 3)],
+                    "馬具コード": [line[i : i + 3].decode(detected_encoding).strip() for i in range(44, 44 + 8 * 3, 3)],
+                    "脚元コード_総合": [line[i : i + 3].decode(detected_encoding).strip() for i in range(68, 68 + 3 * 3, 3)],
+                    "脚元コード_左前": [line[i : i + 3].decode(detected_encoding).strip() for i in range(77, 77 + 3 * 3, 3)],
+                    "脚元コード_右前": [line[i : i + 3].decode(detected_encoding).strip() for i in range(86, 86 + 3 * 3, 3)],
+                    "脚元コード_左後": [line[i : i + 3].decode(detected_encoding).strip() for i in range(95, 95 + 3 * 3, 3)],
+                    "脚元コード_右後": [line[i : i + 3].decode(detected_encoding).strip() for i in range(104, 104 + 3 * 3, 3)],
+                    "パドックコメント": line[113:153].decode(detected_encoding).strip(),
+                    "脚元コメント": line[153:193].decode(detected_encoding).strip(),
+                    "馬具(その他)コメント": line[193:233].decode(detected_encoding).strip(),
+                    "レースコメント": line[233:273].decode(detected_encoding).strip(),
+                    "ハミ": line[273:276].decode(detected_encoding).strip(),
+                    "バンテージ": line[276:279].decode(detected_encoding).strip(),
+                    "蹄鉄": line[279:282].decode(detected_encoding).strip(),
+                    "蹄状態": line[282:285].decode(detected_encoding).strip(),
+                    "ソエ": line[285:288].decode(detected_encoding).strip(),
+                    "骨瘤": line[288:291].decode(detected_encoding).strip(),
+                    "予備": line[291:302].decode(detected_encoding).strip(),
                 }
-
                 # スペースをNaNに置換
                 for key, value in data.items():
                     if value == " ":
