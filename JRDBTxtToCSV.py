@@ -1217,12 +1217,12 @@ class JRDBFileConverter:
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
                     "Ｒ": line[6:8].decode(detected_encoding).strip(),
-                    "ハロンタイム": [line[i : i + 3].decode(detected_encoding).strip() for i in range(9, 63, 3)],
-                    "１コーナー": line[63:127].decode(detected_encoding).strip(),
-                    "２コーナー": line[127:191].decode(detected_encoding).strip(),
-                    "３コーナー": line[191:255].decode(detected_encoding).strip(),
-                    "４コーナー": line[255:319].decode(detected_encoding).strip(),
-                    "ペースアップ位置": [line[i : i + 1].decode(detected_encoding).strip() for i in range(319, 321, 1)],
+                    "ハロンタイム": [line[i : i + 3].decode(detected_encoding).strip() for i in range(8, 8 + 18 * 3, 3)],
+                    "１コーナー": line[62:126].decode(detected_encoding).strip(),
+                    "２コーナー": line[126:190].decode(detected_encoding).strip(),
+                    "３コーナー": line[190:254].decode(detected_encoding).strip(),
+                    "４コーナー": line[254:318].decode(detected_encoding).strip(),
+                    "ペースアップ位置": line[319:321].decode(detected_encoding).strip(),
                     "１角": line[321:324].decode(detected_encoding).strip(),
                     "２角": line[324:327].decode(detected_encoding).strip(),
                     "向正": line[327:330].decode(detected_encoding).strip(),
@@ -1246,10 +1246,8 @@ class JRDBFileConverter:
     # UKC
     def read_and_convert_ukc(self, file_path):
         data_list = []
-
         # ファイルのエンコーディングを検出
         detected_encoding = self.detect_encoding(file_path)
-
         # バイナリモードでファイルを開く
         with open(file_path, "rb") as f:
             for line in f:
