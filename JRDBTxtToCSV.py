@@ -97,6 +97,7 @@ class JRDBFileConverter:
             detected_encoding = result["encoding"]
         return detected_encoding
 
+    # BAC
     def read_and_convert_bac(self, file_path):
         """
         BACファイルを読み込み、データフレームに変換する。
@@ -161,6 +162,7 @@ class JRDBFileConverter:
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
 
+    # CHA
     def read_and_convert_cha(self, file_path):
         """
         CHA ファイルを読み込み、データフレームに変換する。
@@ -218,6 +220,7 @@ class JRDBFileConverter:
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
 
+    # CYB
     def read_and_convert_cyb(self, file_path):
         """
         CYB ファイルを読み込み、データフレームに変換する。
@@ -269,6 +272,7 @@ class JRDBFileConverter:
 
         return pd.DataFrame(data_list)
 
+    # CZA
     def read_and_convert_cza(self, file_path):
         """
         JRDBのCZAファイルを読み込み、データフレームに変換する関数。
@@ -327,6 +331,7 @@ class JRDBFileConverter:
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
 
+    # JOA
     def read_and_convert_joa(self, file_path):
         """
         JRDBのJOAファイルを読み込み、データフレームに変換する関数。
@@ -383,6 +388,7 @@ class JRDBFileConverter:
         # データリストからデータフレームを作成して返す
         return pd.DataFrame(data_list)
 
+    # KAB
     def read_and_convert_kab(self, file_path):
         """
         KAB ファイルを読み込み、データフレームに変換する。
@@ -440,6 +446,7 @@ class JRDBFileConverter:
 
         return pd.DataFrame(data_list)
 
+    # KKA
     def read_and_convert_kka(self, file_path):
         """
         KKA ファイルを読み込み、データフレームに変換する。
@@ -500,6 +507,7 @@ class JRDBFileConverter:
                 data_list.append(data)
         return pd.DataFrame(data_list)
 
+    # KYI
     def read_and_convert_kyi(self, file_path):
         """
         KYI ファイルを読み込み、データフレームに変換する。
@@ -650,7 +658,6 @@ class JRDBFileConverter:
                     "放牧先ランク": line[622:623].decode(detected_encoding).strip(),
                     "厩舎ランク": line[623:624].decode(detected_encoding).strip(),
                     "予備7": line[624:1022].decode(detected_encoding).strip(),
-                    "改行": line[1022:1024].decode(detected_encoding).strip(),
                 }
 
                 for key, value in data.items():
@@ -1132,7 +1139,6 @@ class JRDBFileConverter:
                     "馬ペース流れ": line[367:369].decode(detected_encoding).strip(),
                     "４角コース取り": line[369:370].decode(detected_encoding).strip(),
                     "発走時間": line[370:374].decode(detected_encoding).strip(),
-                    "改行": line[374:376].decode(detected_encoding).strip(),
                 }
 
                 # スペースをNaNに置換
@@ -1283,7 +1289,7 @@ class JRDBFileConverter:
 
     def process_files(self, input_directory_path, temp_dir):
         filenames = os.listdir(input_directory_path)
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=8) as executor:
             future_to_file = {
                 executor.submit(self.read_and_convert, os.path.join(input_directory_path, filename)): filename
                 for filename in filenames
