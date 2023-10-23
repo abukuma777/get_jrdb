@@ -63,15 +63,15 @@ download_folder = "/app/data/jrdb_txt"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
-# KZA
-File_type = "KZA"
-converter = JRDBFileConverter(File_type)
-converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
-
-# # MZA
-# File_type = "MZA"
+# # KZA
+# File_type = "KZA"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# MZA
+File_type = "MZA"
+converter = JRDBFileConverter(File_type)
+converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 # # OT
 # File_type = "OT"
