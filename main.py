@@ -121,12 +121,12 @@ download_folder = "/app/data/jrdb_txt"
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
 
 
-# ZED
-File_type = "ZED"
-converter = JRDBFileConverter(File_type)
-converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
-
-# # ZKB
-# File_type = "ZKB"
+# # ZED
+# File_type = "ZED"
 # converter = JRDBFileConverter(File_type)
 # converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
+
+# ZKB
+File_type = "ZKB"
+converter = JRDBFileConverter(File_type)
+converter.save_to_csv(File_type, f"/app/data/jrdb_txt/{File_type}", f"/app/data/jrdb_csv/{File_type}")
