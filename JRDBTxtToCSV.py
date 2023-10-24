@@ -123,7 +123,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                     "年月日": line[8:16].decode(detected_encoding).strip(),
                     "発走時間": line[16:20].decode(detected_encoding).strip(),
                     "距離": line[20:24].decode(detected_encoding).strip(),
@@ -189,7 +189,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                     "馬番": line[8:10].decode(detected_encoding).strip(),
                     "曜日": line[10:12].decode(detected_encoding).strip(),
                     "調教年月日": line[12:20].decode(detected_encoding).strip(),
@@ -242,7 +242,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                     "馬番": line[8:10].decode(detected_encoding).strip(),
                     "調教タイプ": line[10:12].decode(detected_encoding).strip(),
                     "調教コース種別": line[12:13].decode(detected_encoding).strip(),
@@ -356,7 +356,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                     "馬番": line[8:10].decode(detected_encoding).strip(),
                     "血統登録番号": line[10:18].decode(detected_encoding).strip(),
                     "馬名": line[18:54].decode(detected_encoding).strip(),
@@ -468,7 +468,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                     "馬番": line[8:10].decode(detected_encoding).strip(),
                     "ＪＲＡ成績": line[10:22].decode(detected_encoding).strip(),
                     "交流成績": line[22:34].decode(detected_encoding).strip(),
@@ -529,11 +529,11 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                     "馬番": line[8:10].decode(detected_encoding).strip(),
                     "血統登録番号": line[10:18].decode(detected_encoding).strip(),
                     "馬名": line[18:54].decode(detected_encoding).strip(),
-                    "IDM": line[54:59].decode(detected_encoding).strip(),
+                    "ＩＤＭ": line[54:59].decode(detected_encoding).strip(),
                     "騎手指数": line[59:64].decode(detected_encoding).strip(),
                     "情報指数": line[64:69].decode(detected_encoding).strip(),
                     "予備1": line[69:74].decode(detected_encoding).strip(),
@@ -782,7 +782,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                 }
 
                 # 登録頭数をスライスして抽出
@@ -838,7 +838,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                 }
 
                 # 登録頭数をスライスして抽出
@@ -895,7 +895,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                 }
 
                 # 登録頭数をスライスして抽出
@@ -952,7 +952,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                 }
 
                 # 登録頭数をスライスして抽出
@@ -1008,7 +1008,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                 }
 
                 # 登録頭数をスライスして抽出
@@ -1062,7 +1062,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                     "馬番": line[8:10].decode(detected_encoding).strip(),
                     "血統登録番号": line[10:18].decode(detected_encoding).strip(),
                     "年月日": line[18:26].decode(detected_encoding).strip(),
@@ -1168,7 +1168,7 @@ class JRDBFileConverter:
                     "年": line[2:4].decode(detected_encoding).strip(),
                     "回": line[4:5].decode(detected_encoding).strip(),
                     "日": hex_to_dec(line[5:6].decode(detected_encoding).strip()),
-                    "R": line[6:8].decode(detected_encoding).strip(),
+                    "Ｒ": line[6:8].decode(detected_encoding).strip(),
                     "馬番": line[8:10].decode(detected_encoding).strip(),
                     "血統登録番号": line[10:18].decode(detected_encoding).strip(),
                     "年月日": line[18:26].decode(detected_encoding).strip(),
